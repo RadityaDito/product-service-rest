@@ -27,25 +27,25 @@ type ErrorResponse struct {
 func ValidationMiddleware(validate *validator.Validate) echo.MiddlewareFunc {
 	return func(next echo.HandlerFunc) echo.HandlerFunc {
 		return func(c echo.Context) error {
-			// Get the logger
-			log := logger.GetLogger()
+			// // Get the logger
+			// log := logger.GetLogger()
 
-			// Skip validation for methods that don't require a body
-			req := c.Request()
-			if req.Method == http.MethodGet || req.Method == http.MethodDelete || req.Method == http.MethodHead || req.Method == http.MethodOptions {
-				return next(c)
-			}
+			// // Skip validation for methods that don't require a body
+			// req := c.Request()
+			// if req.Method == http.MethodGet || req.Method == http.MethodDelete || req.Method == http.MethodHead || req.Method == http.MethodOptions {
+			// 	return next(c)
+			// }
 
-			// Check if the request body is empty
-			if req.ContentLength == 0 {
-				log.Warn("Empty request body",
-					zap.String("path", req.URL.Path),
-					zap.String("method", req.Method),
-				)
-				return c.JSON(http.StatusBadRequest, ErrorResponse{
-					Message: "Request body cannot be empty",
-				})
-			}
+			// // Check if the request body is empty
+			// if req.ContentLength == 0 {
+			// 	log.Warn("Empty request body",
+			// 		zap.String("path", req.URL.Path),
+			// 		zap.String("method", req.Method),
+			// 	)
+			// 	return c.JSON(http.StatusBadRequest, ErrorResponse{
+			// 		Message: "Request body cannot be empty",
+			// 	})
+			// }
 
 			return next(c)
 		}

@@ -106,6 +106,9 @@ func main() {
 	v1.POST("/products/bulk/generate", productHandler.BulkGenerateProducts)
 	v1.DELETE("/products/bulk", productHandler.DeleteAllProducts)
 
+	// New route to get total product count
+	v1.GET("/products/count", productHandler.GetProductCount)
+
 	// Prometheus metrics route (placeholder for future implementation)
 	e.GET("/metrics", func(c echo.Context) error {
 		return c.String(http.StatusOK, "Metrics endpoint")

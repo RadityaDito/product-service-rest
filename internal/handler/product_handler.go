@@ -169,7 +169,8 @@ func (h *ProductHandler) GetAllProducts(c echo.Context) error {
 	)
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"products": products,
+		"products":   products,
+		"totalCount": len(products),
 	})
 }
 
@@ -330,4 +331,24 @@ func (h *ProductHandler) DeleteAllProducts(c echo.Context) error {
 	h.logger.Info("All products deleted successfully")
 
 	return c.JSON(http.StatusOK, map[string]string{"message": "All products deleted successfully"})
+}
+
+// GetProductCount handles GET request to retrieve the total number of products
+func (h *ProductHandler) GetProductCount(c echo.Context) error {
+	totalCount, err := h.repo.Count(c.Request().Context())
+	if err != nil {
+		h.logger.Error("Failed to retrieve product count",
+			zap.Error(err),
+			zap.String("handler", "GetProductCount"),
+		)
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve product count"})
+	}
+
+	h.logger.Info("Product count retrieved successfully",
+		zap.Int("total_count", totalCount),
+	)
+
+	return c.JSON(http.StatusOK, map[string]interface{}{
+		"totalCount": totalCount,
+	})
 }
