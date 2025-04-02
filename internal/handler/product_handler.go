@@ -127,35 +127,35 @@ func (h *ProductHandler) ListProducts(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve products"})
 	}
 
-	// // Get total count for pagination metadata
-	// totalCount, err := h.repo.Count(c.Request().Context())
-	// if err != nil {
-	// 	h.logger.Warn("Failed to retrieve total product count",
-	// 		zap.Error(err),
-	// 		zap.String("handler", "ListProducts"),
-	// 	)
-	// 	totalCount = 0
-	// }
+	// Get total count for pagination metadata
+	totalCount, err := h.repo.Count(c.Request().Context())
+	if err != nil {
+		h.logger.Warn("Failed to retrieve total product count",
+			zap.Error(err),
+			zap.String("handler", "ListProducts"),
+		)
+		totalCount = 0
+	}
 
 	h.logger.Info("Products listed successfully",
 		zap.Int("page", page),
 		zap.Int("page_size", pageSize),
-		// zap.Int("total_count", totalCount),
+		zap.Int("total_count", totalCount),
 		zap.Int("returned_count", len(products)),
 	)
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
-		"products": products,
-		"page":     page,
-		"pageSize": pageSize,
-		// "totalCount": totalCount,
+		"products":   products,
+		"page":       page,
+		"pageSize":   pageSize,
+		"totalCount": totalCount,
 	})
 }
 
 // GetAllProducts handles GET request to retrieve all products without pagination
 func (h *ProductHandler) GetAllProducts(c echo.Context) error {
 	// Retrieve all products
-	products, err := h.repo.List(c.Request().Context(), 1, 100000) // Arbitrary large page size
+	products, err := h.repo.GetAll(c.Request().Context()) // Arbitrary large page size
 	if err != nil {
 		h.logger.Error("Failed to retrieve all products",
 			zap.Error(err),
@@ -164,13 +164,17 @@ func (h *ProductHandler) GetAllProducts(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to retrieve products"})
 	}
 
+	totalCount := len(products)
+
 	h.logger.Info("All products retrieved successfully",
-		zap.Int("total_count", len(products)),
+		zap.Int("total_count", totalCount),
 	)
 
 	return c.JSON(http.StatusOK, map[string]interface{}{
 		"products":   products,
-		"totalCount": len(products),
+		"page":       1,
+		"pageSize":   totalCount,
+		"totalCount": totalCount,
 	})
 }
 

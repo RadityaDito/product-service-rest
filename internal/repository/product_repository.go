@@ -88,6 +88,15 @@ func (r *ProductRepository) List(ctx context.Context, page, pageSize int) ([]mod
 	return products, err
 }
 
+// GetAll retrieves all products without pagination
+func (r *ProductRepository) GetAll(ctx context.Context) ([]models.Product, error) {
+	var products []models.Product
+	query := `SELECT * FROM products ORDER BY created_at DESC`
+
+	err := r.db.SelectContext(ctx, &products, query)
+	return products, err
+}
+
 // Update modifies an existing product
 func (r *ProductRepository) Update(ctx context.Context, id uuid.UUID, req *models.ProductRequest) error {
 	query := `

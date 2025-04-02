@@ -89,7 +89,7 @@ func main() {
 	e.Validator = &CustomValidator{validator: validate}
 
 	// Add validation middleware
-	e.Use(customMiddleware.ValidationMiddleware(validate))
+	// e.Use(customMiddleware.ValidationMiddleware(validate))
 
 	// Routes
 	v1 := e.Group("/api/v1")
