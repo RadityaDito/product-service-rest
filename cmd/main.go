@@ -147,7 +147,7 @@ func main() {
 	// Configure server
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080"
+		port = "4000"
 	}
 
 	// Print routes for development

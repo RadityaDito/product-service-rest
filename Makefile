@@ -43,15 +43,25 @@ test:
 docker-build:
 	$(DOCKER_BUILD) -t product-service .
 
-# Docker compose up
-.PHONY: docker-up
-docker-up:
-	$(DOCKER_COMPOSE) up --build
+# Docker compose up for staging
+.PHONY: docker-up-stg
+docker-up-stg:
+	$(DOCKER_COMPOSE) -f docker-compose.stg.yml up --build
 
-# Docker compose down
-.PHONY: docker-down
-docker-down:
-	$(DOCKER_COMPOSE) down
+# Docker compose down for staging
+.PHONY: docker-down-stg
+docker-down-stg:
+	$(DOCKER_COMPOSE) -f docker-compose.stg.yml down
+
+# Docker compose up for production
+.PHONY: docker-up-prod
+docker-up-prod:
+	$(DOCKER_COMPOSE) -f docker-compose.prod.yml up --build
+
+# Docker compose down for production
+.PHONY: docker-down-prod
+docker-down-prod:
+	$(DOCKER_COMPOSE) -f docker-compose.prod.yml down
 
 # Install dependencies
 .PHONY: deps

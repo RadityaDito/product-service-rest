@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  rest-api:
+    image: radityaditoo/product-service-rest:latest # Pull from DockerHub
+    container_name: product-service-rest-dockerhub
+    ports:
+      - "4000:4000" # Map container port 4000 to host port 4000
+    env_file:
+      - .env.prod
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

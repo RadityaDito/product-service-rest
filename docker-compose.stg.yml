@@ -7,17 +7,11 @@ services:
   #     dockerfile: Dockerfile
   #   container_name: product-service
   #   ports:
-  #     - "8080:8080"
+  #     - "4000:4000"
   #   depends_on:
   #     - postgres
-  #   environment:
-  #     - DB_HOST=postgres
-  #     - DB_PORT=5432
-  #     - DB_USER=productuser
-  #     - DB_PASSWORD=productpass
-  #     - DB_NAME=productdb
-  #     - DB_SSLMODE=disable
-
+  #   env_file:
+  #     - .env.stg
   postgres:
     image: postgres:latest
     container_name: product-postgres
