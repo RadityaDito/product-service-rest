@@ -58,10 +58,10 @@ docker-down-stg:
 docker-up-prod:
 	$(DOCKER_COMPOSE) -f docker-compose.prod.yml up --build
 
-# Docker compose down for production
+# Docker compose down for production with volumes and network cleanup
 .PHONY: docker-down-prod
 docker-down-prod:
-	$(DOCKER_COMPOSE) -f docker-compose.prod.yml down
+	$(DOCKER_COMPOSE) -f docker-compose.prod.yml down --volumes --remove-orphans
 
 # Install dependencies
 .PHONY: deps

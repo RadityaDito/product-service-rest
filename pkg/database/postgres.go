@@ -20,7 +20,7 @@ type Config struct {
 	SSLMode  string
 }
 
-// NewConnection creates a new database connection
+// NewConnection creates a new database connection with pooling
 func NewConnection() *sqlx.DB {
 	// Read configuration from environment variables
 	config := Config{
@@ -47,6 +47,11 @@ func NewConnection() *sqlx.DB {
 			time.Sleep(5 * time.Second)
 			continue
 		}
+
+		// Configure connection pool - SAME AS GRPC FOR FAIR COMPARISON
+		db.SetMaxOpenConns(25)                  // Max open connections
+		db.SetMaxIdleConns(5)                   // Max idle connections
+		db.SetConnMaxLifetime(30 * time.Minute) // Connection lifetime
 
 		// Test the connection
 		err = db.Ping()
