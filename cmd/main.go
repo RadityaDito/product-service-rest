@@ -78,9 +78,14 @@ func main() {
 		)
 	}
 
-	// Create repository and handler
+	// Create repositories
+	// Database-backed repository
 	productRepo := repository.NewProductRepository(db)
 	productHandler := handler.NewProductHandler(productRepo)
+
+	// In-memory repository
+	memoryRepo := repository.NewProductMemoryRepository()
+	memoryHandler := handler.NewProductMemoryHandler(memoryRepo)
 
 	// Create validator
 	validate := validator.New()
@@ -88,26 +93,31 @@ func main() {
 	// Set custom validator
 	e.Validator = &CustomValidator{validator: validate}
 
-	// Add validation middleware
-	// e.Use(customMiddleware.ValidationMiddleware(validate))
-
 	// Routes
 	v1 := e.Group("/api/v1")
 
-	// Product routes
+	// DB-backed Product routes
 	v1.POST("/products", productHandler.CreateProduct)
 	v1.GET("/products", productHandler.ListProducts)
 	v1.GET("/products/all", productHandler.GetAllProducts)
 	v1.GET("/products/:id", productHandler.GetProduct)
 	v1.PUT("/products/:id", productHandler.UpdateProduct)
 	v1.DELETE("/products/:id", productHandler.DeleteProduct)
-
-	// Bulk operations routes
 	v1.POST("/products/bulk/generate", productHandler.BulkGenerateProducts)
 	v1.DELETE("/products/bulk", productHandler.DeleteAllProducts)
-
-	// New route to get total product count
 	v1.GET("/products/count", productHandler.GetProductCount)
+
+	// In-memory Product routes with "memory" prefix
+	memory := v1.Group("/memory")
+	memory.POST("/products", memoryHandler.CreateProduct)
+	memory.GET("/products", memoryHandler.ListProducts)
+	memory.GET("/products/all", memoryHandler.GetAllProducts)
+	memory.GET("/products/:id", memoryHandler.GetProduct)
+	memory.PUT("/products/:id", memoryHandler.UpdateProduct)
+	memory.DELETE("/products/:id", memoryHandler.DeleteProduct)
+	memory.POST("/products/bulk/generate", memoryHandler.BulkGenerateProducts)
+	memory.DELETE("/products/bulk", memoryHandler.DeleteAllProducts)
+	memory.GET("/products/count", memoryHandler.GetProductCount)
 
 	// Prometheus metrics route (placeholder for future implementation)
 	e.GET("/metrics", func(c echo.Context) error {
